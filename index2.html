@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>EaselJS demo: Dragging</title>
+<script type="text/javascript" src="js/easeljs-NEXT.min.js"></script>
+<script type="text/javascript" src="js/tweenjs-0.5.1.min.js"></script>
+<script type="text/javascript" src="js/soundjs-0.5.2.min.js"></script>
+<script type="text/javascript" src="js/preloadjs-0.4.1.min.js"></script>
+<style type="text/css">
+.left {
+    float: left;
+
+}
+
+</style>
+
+<body>
+
+<div class="left">
+<canvas id="game" width="400" height="300" style="border:1px solid red">
+</canvas>
+</div>
+<div class="right">
+<canvas id="game1" width="400" height="300" style="border:1px solid red">
+</canvas>
+</div>
+
+<script type="text/javascript">
+
+var stage = new createjs.Stage("game");
+var container = new createjs.Container();
+var shape = new createjs.Shape();
+
+var shape1 = new createjs.Shape();
+
+var game1 = document.getElementById('game1');
+
+var ctx = game1.getContext('2d');
+// console.log(ctx);
+shape.graphics.setStrokeStyle(1).beginStroke('#000').moveTo(0,0).lineTo(100,100).lineTo(10,60).closePath();
+shape1.graphics.setStrokeStyle(1).beginStroke('#000').beginFill("#00F").moveTo(0,0).lineTo(100,100).lineTo(10,60).closePath();
+
+
+// beginFill("#00F")
+
+var img = new Image();
+img.src = 'images/5.jpg';
+var bitmap;
+img.onload = function(e) {
+    bitmap = new createjs.Bitmap('images/5.jpg');
+    bitmap.mask = shape;
+
+
+    // container.addChild(shape1);
+    container.addChild(shape);
+    container.addChild(bitmap);
+    // container.x = 100;
+    // container.y = 100;
+    stage.addChild(container);
+    container.draw(ctx);
+
+    stage.update();
+
+    // var objs;
+    // var P;
+    // container.on('mousedown', function(evt) {
+    //     P = container.globalToLocal(evt.stageX, evt.stageY);
+    //     console.log("mouse x:y" + stage.mouseX +":"+stage.mouseY + " stage x:y" + evt.stageX +":"+evt.stageY + "Point x:y" + P.x +":"+P.y);
+    //     objs = container.getObjectsUnderPoint(P.x, P.y);
+    //     // objs = container.getObjectsUnderPoint(evt.stageX, evt.stageY);
+    //     console.log(objs);
+    // });
+
+    container.hitArea = shape1;
+
+    container.on("pressmove", function(evt) {
+         // circle.x = evt.currentTarget.x = evt.stageX;
+         // circle.y = evt.currentTarget.y = evt.stageY;
+         evt.currentTarget.x = evt.stageX;
+         evt.currentTarget.y = evt.stageY;
+         // console.log('circle ... pressmove');
+         stage.update();
+    });
+}
+
+
+
+
+
+stage.update();
+
+
+
+</script>
+
+</body>
+</html>

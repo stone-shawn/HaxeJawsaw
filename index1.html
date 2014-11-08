@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EaselJS demo: Dragging</title>
+<script type="text/javascript" src="js/easeljs-0.7.1.min.js"></script>
+<script type="text/javascript" src="js/tweenjs-0.5.1.min.js"></script>
+<script type="text/javascript" src="js/soundjs-0.5.2.min.js"></script>
+<script type="text/javascript" src="js/preloadjs-0.4.1.min.js"></script>
+  <script>
+    var stage, output;
+
+    var circle = new createjs.Shape();
+    var circle1 = new createjs.Shape();
+    
+    function init() {
+      stage = new createjs.Stage("demoCanvas");
+      
+      // this lets our drag continue to track the mouse even when it leaves the canvas:
+      // play with commenting this out to see the difference.
+      stage.mouseMoveOutside = true; 
+      
+      
+      circle.graphics.setStrokeStyle(1).beginStroke('#000').beginFill("#00F").moveTo(0,0).lineTo(100,100).lineTo(10,60).closePath();
+
+
+      circle.alpha = 0.9;
+      circle1.alpha = 0;
+      var label = new createjs.Text("drag me", "bold 14px Arial", "#FFFFFF");
+      label.textAlign = "center";
+      label.y = -7;
+      
+      var dragger = new createjs.Container();
+      dragger.x = dragger.y = 0;
+      // dragger.x = dragger.y = 100;
+      // dragger.addChild(circle, label);
+      var img = new Image();
+      img.src = "images/5.jpg";
+      img.onload = function() {
+          var bitmap = new createjs.Bitmap("images/5.jpg");
+
+          
+
+          circle1.graphics.setStrokeStyle(1).beginStroke('#000').beginFill("#00F").moveTo(20,20).lineTo(100,100).lineTo(10,60).closePath();
+
+          dragger.addChild(bitmap);
+          dragger.mask = circle;
+          dragger.addChild(circle);
+          // dragger.addChild(circle1);
+          stage.addChild(dragger);
+
+          console.log(dragger.getNumChildren());
+
+          console.log(circle.x);
+          var child = dragger.getChildAt(1);
+          var pt = child.globalToLocal(stage.mouseX, stage.mouseY);
+
+          console.log('PT!' + 'x:' + pt.x+':'+pt.y);
+
+
+
+          // if(circle.hitTest(stage.mouseX, stage.mouseY)) {
+          //     console.log('Very good!');
+          // }
+
+          var hit = false;
+
+          stage.enableMouseOver();
+
+
+          // circle.on("mouseover", function(e) {
+          //     hit = true;
+          //     console.log('Mouseover hit is true');
+          // });
+          // circle.on("mouseout", function(e) {
+          //     hit = false;
+          //     console.log('Mouse out hit is false');
+          // });
+
+          stage.on("mousedown", function(evt) {
+
+
+              pt = child.globalToLocal(stage.mouseX, stage.mouseY);
+              if(child.hitTest(pt.x, pt.y)) {
+                  hit=true;
+              } else {
+                  hit=false;
+              }
+              console.log('PT!' + 'x:' + pt.x+':'+pt.y);
+
+              // console.log('mouse down!' + 'x:' + stage.mouseX+':'+stage.mouseY);
+              // if(dragger.hitTest(dragger.mouseX, dragger.mouseY)) {
+              //     console.log('hitted!');
+              //     hit = true;
+              //     circle1.add
+              // } else {
+              //     hit = false;
+              // }
+          });
+
+
+          // stage.on("mousemove",function(evt) {
+              
+          //     if (circle.hitTest(stage.mouseX, stage.mouseY)) { 
+          //         hit = true;
+          //         // circle.alpha = 1;
+          //         console.log('tttt');
+                  
+          //     }
+          //     console.log('mousemove');
+          // });
+
+
+          dragger.on("pressmove", function(evt) {
+            if(hit == true) {
+                 // circle.x = evt.currentTarget.x = evt.stageX;
+                 // circle.y = evt.currentTarget.y = evt.stageY;
+                 evt.currentTarget.x = evt.stageX;
+                 evt.currentTarget.y = evt.stageY;
+                 console.log('circle ... pressmove');
+                 stage.update();
+            }
+            // currentTarget will be the container that the event listener was added to:
+          });
+          stage.update();
+
+          // createjs.Ticker.on("tick", tick);
+      }
+      
+    }
+
+    function tick(event) {
+        circle.alpha = 0.2;
+        if (circle.hitTest(stage.mouseX, stage.mouseY)) { 
+            circle.alpha = 1;
+            console.log('tttt');
+        }
+        stage.update(event);
+    }
+
+  </script>
+</head>
+<body onLoad="init();">
+  <canvas id="demoCanvas" style="border:1px solid red" width="500" height="200">
+    alternate content
+  </canvas>
+</body>
+</html>
